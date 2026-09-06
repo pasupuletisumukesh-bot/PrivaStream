@@ -10,7 +10,7 @@ import onnxruntime as ort
 
 
 # ============================================================
-# PrivaStream - SAMPLE 4
+# PrivaStream - SAMPLE 6
 # Hybrid 60 FPS Output + Asynchronous GPU AI
 #
 # Architecture:
@@ -1650,7 +1650,7 @@ def main():
     # --------------------------------------------------------
 
     window_name = (
-        "PrivaStream - Sample 4"
+        "PrivaStream - Sample 6"
     )
 
     cv2.namedWindow(
@@ -1898,156 +1898,6 @@ def main():
             display_frame = (
                 output_frame.copy()
             )
-
-            for track in (
-                tracker.active_tracks.values()
-            ):
-
-                x1, y1, x2, y2 = [
-                    int(v)
-                    for v in track.bbox
-                ]
-
-                x1 = max(
-                    0,
-                    min(
-                        actual_width - 1,
-                        x1
-                    )
-                )
-
-                y1 = max(
-                    0,
-                    min(
-                        actual_height - 1,
-                        y1
-                    )
-                )
-
-                x2 = max(
-                    0,
-                    min(
-                        actual_width - 1,
-                        x2
-                    )
-                )
-
-                y2 = max(
-                    0,
-                    min(
-                        actual_height - 1,
-                        y2
-                    )
-                )
-
-                if failsafe_active:
-
-                    color = (
-                        0,
-                        165,
-                        255
-                    )
-
-                    status = (
-                        "FAIL-SAFE"
-                    )
-
-                elif track.whitelisted:
-
-                    color = (
-                        0,
-                        255,
-                        0
-                    )
-
-                    status = (
-                        f"PRIMARY "
-                        f"{track.confidence:.2f}"
-                    )
-
-                else:
-
-                    # A manually revealed person may have a NEW track
-                    # after leaving and re-entering. Check the persistent
-                    # embedding so the HUD agrees with the actual mask.
-                    persistent_manual_reveal = False
-
-                    for saved_embedding in enrollment.manual_revealed_embeddings:
-
-                        if cosine_similarity(
-                            track.embedding,
-                            saved_embedding
-                        ) >= REID_THRESHOLD:
-
-                            persistent_manual_reveal = True
-                            break
-
-                    if (
-                        track.manual_revealed
-                        or
-                        persistent_manual_reveal
-                    ):
-
-                        color = (
-                            255,
-                            200,
-                            0
-                        )
-
-                        status = (
-                            "MANUAL REVEAL"
-                        )
-
-                    else:
-
-                        color = (
-                            0,
-                            0,
-                            255
-                        )
-
-                        status = (
-                            "MASKED"
-                        )
-
-                
-                    color = (
-                        0,
-                        0,
-                        255
-                    )
-
-                    status = (
-                        "MASKED"
-                    )
-
-                cv2.rectangle(
-                    display_frame,
-                    (x1, y1),
-                    (x2, y2),
-                    color,
-                    2
-                )
-
-                cv2.putText(
-                    display_frame,
-                    (
-                        f"ID:{track.track_id} "
-                        f"[{status}]"
-                    ),
-                    (
-                        x1,
-                        max(
-                            22,
-                            y1 - 8
-                        )
-                    ),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.50,
-                    color,
-                    2
-                )
-
             # =================================================
             # J. HUD
             # =================================================
