@@ -1,0 +1,8 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Large installers and binary executables
+*.exe
+OBS-Studio-Installer.exe
